@@ -1,10 +1,22 @@
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
+const cookieSession = require("cookie-session");
+require('dotenv').config();
 
 const app = express();
 const PORT = 3000;
+const SECRET = process.env.COOKIE_SECRET;
 
+app.use(
+   cookieSession({
+     name: "sess",
+     keys: [SECRET], // should use as secret environment variable
+     httpOnly: true
+   })
+ );
+
+app.use(express.json());
 app.use('/bootstrap', express.static(path.join(__dirname, 'node_modules/bootstrap/dist')));
 app.use('/images', express.static(path.join(__dirname, 'public/images')));
 app.use(express.static(path.join(__dirname, 'public')));

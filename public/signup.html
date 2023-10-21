@@ -5,16 +5,17 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UT Austin Login</title>
-    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
     <style>
+        body {
+            background-color: #BF5700; /* UT Austin Burnt Orange */
+            color: white;
+        }
         .navbar {
-            background-color: #333333; /* UT Austin Dark Gray */
+            background-color: #753704; /* UT Austin Dark Gray */
         }
         .nav-link, .navbar-brand {
             color: white !important;
-        }
-        body {
-            background-color: #BF5700; /* UT Austin Burnt Orange */
         }
         .login-container {
             max-width: 400px;
@@ -22,6 +23,7 @@
             padding: 20px;
             background-color: #fff;
             border-radius: 5px;
+            color: black;
         }
         .ut-logo {
             width: 100%;
@@ -41,8 +43,11 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
-                <li class="nav-item active">
-                    <a class="nav-link" href="/">Home </a>
+                <li class="nav-item">
+                    <a class="nav-link" href="/login">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/signup">Signup</a>
                 </li>
             </ul>
         </div>
@@ -63,15 +68,19 @@
                 <input type="password" class="form-control" id="upw">
             </div>
 
-            <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
-                <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
-                <label class="btn btn-outline-primary" for="btnradio1">Volunteer</label>
-              
-                <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
-                <label class="btn btn-outline-primary" for="btnradio2">User</label>
+            <div class="mb-3 text-center">
+                <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                    <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
+                    <label class="btn btn-outline-primary" for="btnradio1">Volunteer</label>
+                
+                    <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="btnradio2">User</label>
+                </div>
             </div>
-            
-            <button type="submit" class="btn btn-primary">Sign Up!</button>
+
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary">Sign Up!</button>
+            </div>
         </form>
     </div>
 </body>
