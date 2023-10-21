@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
     <style>
         body {
-            background-color: #BF5700;
+            background-color: #BF5700; /* UT Austin Burnt Orange */
         }
         .login-container {
             max-width: 400px;
@@ -30,14 +30,27 @@
         <img src="https://upload.wikimedia.org/wikipedia/en/thumb/e/e1/University_of_Texas_at_Austin_seal.svg/1200px-University_of_Texas_at_Austin_seal.svg.png" alt="UT Austin Logo" class="ut-logo">
         <form>
             <div class="mb-3">
-                <label for="email" class="form-label">Username</label>
-                <input type="email" class="form-control" id="uid">
+                <label for="name" class="form-label">Name</label>
+                <input type="text" class="form-control" id="name">
+            </div>
+            <div class="mb-3">
+                <label for="eid" class="form-label">eid</label>
+                <input type="eid" class="form-control" id="uid">
             </div>
             <div class="mb-3">
                 <label for="password" class="form-label">Password</label>
                 <input type="password" class="form-control" id="upw">
             </div>
-            <button type="submit" class="btn btn-primary">Login</button>
+
+            <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
+                <label class="btn btn-outline-primary" for="btnradio1">Volunteer</label>
+              
+                <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
+                <label class="btn btn-outline-primary" for="btnradio2">User</label>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Sign Up!</button>
         </form>
     </div>
 </body>
