@@ -1,10 +1,12 @@
 const express = require('express');
 const path = require('path');
+const bodyParser = require('body-parser');
 
 const app = express();
 const PORT = 3000;
 
 app.use('/bootstrap', express.static(path.join(__dirname, 'node_modules/bootstrap/dist')));
+app.use('/images', express.static(path.join(__dirname, 'public/images')));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', (req, res) => {
@@ -26,7 +28,7 @@ app.get('/login', (req, res) => {
 
 //handle the login logic
 app.post('/login', (req, res) => {
-   
+
 })
 
 app.listen(PORT, () => {

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -9,6 +10,15 @@
     <style>
         body {
             background-color: #BF5700;
+        }
+        .navbar {
+            background-color: #333333; /* UT Austin Dark Gray */
+        }
+        .nav-link, .navbar-brand {
+            color: white !important;
+        }
+        .ut-logo-navbar {
+            width: 150px;
         }
         .login-container {
             max-width: 400px;
@@ -25,20 +35,44 @@
         }
     </style>
 </head>
+
 <body>
+
+    <nav class="navbar navbar-expand-lg">
+        <a class="navbar-brand" href="#">
+            OnTheMoov
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/">Home </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
     <div class="login-container">
-        <img src="https://upload.wikimedia.org/wikipedia/en/thumb/e/e1/University_of_Texas_at_Austin_seal.svg/1200px-University_of_Texas_at_Austin_seal.svg.png" alt="UT Austin Logo" class="ut-logo">
+        <img src="/images/utlogo.png" alt="UT Austin Logo" class="ut-logo">
         <form>
             <div class="mb-3">
-                <label for="email" class="form-label">Username</label>
+                <label for="uid" class="form-label">Username</label>
                 <input type="email" class="form-control" id="uid">
             </div>
             <div class="mb-3">
-                <label for="password" class="form-label">Password</label>
+                <label for="upw" class="form-label">Password</label>
                 <input type="password" class="form-control" id="upw">
             </div>
             <button type="submit" class="btn btn-primary">Login</button>
         </form>
     </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 </body>
+
 </html>

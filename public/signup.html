@@ -7,6 +7,12 @@
     <title>UT Austin Login</title>
     <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
     <style>
+        .navbar {
+            background-color: #333333; /* UT Austin Dark Gray */
+        }
+        .nav-link, .navbar-brand {
+            color: white !important;
+        }
         body {
             background-color: #BF5700; /* UT Austin Burnt Orange */
         }
@@ -26,6 +32,21 @@
     </style>
 </head>
 <body>
+    <nav class="navbar navbar-expand-lg">
+        <a class="navbar-brand" href="#">
+            OnTheMoov
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/">Home </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
     <div class="login-container">
         <img src="https://upload.wikimedia.org/wikipedia/en/thumb/e/e1/University_of_Texas_at_Austin_seal.svg/1200px-University_of_Texas_at_Austin_seal.svg.png" alt="UT Austin Logo" class="ut-logo">
         <form>
@@ -49,7 +70,7 @@
                 <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
                 <label class="btn btn-outline-primary" for="btnradio2">User</label>
             </div>
-
+            
             <button type="submit" class="btn btn-primary">Sign Up!</button>
         </form>
     </div>
