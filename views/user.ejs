@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Portal</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar-scheduler@6.1.9/index.global.min.js'></script>
+
+    <style>
+        .flex-container {
+            /*background-color: #753704  !important;*/
+            background-color: #CF7922 !important;
+            color: white !important; 
+            width: 82%; 
+            height: 75%; 
+            margin-left: auto !important; 
+            margin-right: auto !important; 
+        }
+        
+        .fc-col-header-cell {
+            color: white !important; 
+        }
+
+        .welcome-message {
+            width: 100%;
+        }
+
+        body {
+            background-color: #BF5700; /* UT Austin Burnt Orange */
+            color: white;
+        }
+
+        .navbar {
+            background-color: #753704; /* UT Austin Dark Gray */
+        }
+
+        .nav-link,
+        .navbar-brand {
+            color: white !important;
+        }
+
+        .ut-logo {
+            width: 150px;
+        }
+
+        .main-content {
+            background-color: white;
+            color: black;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+
+        .modal {
+            color: black;
+        }
+
+        .fc-col-header-cell-cushion {
+            color: white; /* Change this to your desired text color */
+            
+        }
+        /* Style for the modal content */
+        .modal-content {
+            border-radius: 10px;
+        }
+
+        /* Style for the form */
+        #form {
+            padding: 20px;
+        }
+
+        /* Style for form labels */
+        #form label {
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        /* Style for form input fields */
+        #form .form-control {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        /* Style for modal footer buttons */
+        .modal-footer button {
+            font-size: 16px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg mb-4">
+        <a class="navbar-brand" href="/">OnTheMoov</a>
+        <div class="welcome-message text-center">
+            Welcome <%- name %>!
+        </div>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/logout">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="flex-container calendar-width calendar-height">
+        <div id="calendar"></div>
+    </div>
+
+    <!-- Bootstrap modal for confirmation -->
+    <div class="modal fade" id="eventModal" tabindex="-1" aria-labelledby="eventModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="eventModalLabel">Event Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p><span id="selectedTimeRange"></span></p>
+                </div>
+
+                <div id="form">
+                    <div class="mb-3">
+                        <label for="fromLocation" class="form-label">From:</label>
+                        <input type="text" class="form-control" id="fromLocation" name="from">
+                    </div>
+                    <div class="mb-3">
+                        <label for="toLocation" class="form-label">To:</label>
+                        <input type="text" class="form-control" id="toLocation" name="to">
+                    </div>
+                    <div class="modal-footer" id="form-buttons">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" id="closeModal">Close</button>
+                        <input type="submit" id="submitEvent" value="Submit" class="btn btn-primary">
+                    </div>
+                </div>
+
+                <div class="modal-footer" id="modal-buttons">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" id="closeModal">Close</button>
+                    <button type="button" class="btn btn-danger" id="deleteEvent">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        function formatDateTime(startStr, endStr, from, to) {
+            let startDate = new Date(startStr);
+            let endDate = new Date(endStr);
+
+            let dateOptions = {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            };
+
+            let timeOptions = {
+                hour: '2-digit',
+                minute: '2-digit',
+                timeZoneName: 'short'
+            };
+
+            let formattedStartDate = startDate.toLocaleString('en-US', dateOptions);
+            let formattedStartTime = startDate.toLocaleString('en-US', timeOptions);
+            let formattedEndTime = endDate.toLocaleString('en-US', timeOptions);
+            
+            if (startDate.toDateString() === endDate.toDateString()) {
+                // If both dates are the same
+                return `<strong>From:</strong> ${from}<br>
+                        <strong>To:</strong> ${to}<br>
+                        <strong>Date:</strong> ${formattedStartDate}<br>
+                        <strong>Time:</strong> ${formattedStartTime} to ${formattedEndTime}`;
+            } else {
+                let formattedEndDate = endDate.toLocaleString('en-US', dateOptions);
+                return `<strong>From:</strong> ${from}<br>
+                        <strong>To:</strong> ${to}<br>
+                        <strong>Date:</strong> ${formattedStartDate}<br>
+                        <strong>Time:</strong> ${formattedStartTime}<br>
+                        <strong>to</strong><br>
+                        <strong>Date:</strong> ${formattedEndDate}<br>
+                        <strong>Time:</strong> ${formattedEndTime}`;
+            }
+        }
+
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var everyInfo = <%- JSON.stringify(infos) %>;
+            let name = '<%- name %>';
+            var calendarEl = document.getElementById('calendar');
+            var infos;
+
+            var selectedEvent;
+
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'timeGridWeek',
+                height: screen.height * 0.7,
+                headerToolbar: {
+                    left: 'prev,next',
+                    center: 'title',
+                    right: ''
+                },
+                selectable: true,
+                allDaySlot: false,
+                dayHeaderClassNames: ["dayHeaders"],
+                select: function (info) {
+                infos = info;
+                
+                $('#modal-buttons').hide();  // Hiding the modal buttons
+                $('#form-buttons').show();  // Showing the form buttons
+                $('#form').show();  // Show the form
+                document.getElementById('selectedTimeRange').innerHTML = info.startStr + ' to ' + info.endStr;
+                $('#eventModal').modal('show');
+            },
+            eventClick: function (info) {
+                selectedEvent = info.event;
+                document.getElementById('selectedTimeRange').innerHTML = formatDateTime(info.event.startStr, info.event.endStr, info.event.extendedProps.from, info.event.extendedProps.to);
+                infos = info.event
+                $('#modal-buttons').show();  // Showing the modal buttons
+                $('#form-buttons').hide();  // Hiding the form buttons
+                $('#form').hide();  // Hide the form
+                $('#eventModal').modal('show');
+            }
+            });
+
+            for (let i = 0; i < everyInfo.length; i++) {
+                    calendar.addEvent({
+                        title: everyInfo[i].name,
+                        start: new Date(everyInfo[i].startTime),
+                        end: new Date(everyInfo[i].endTime),
+                        from: everyInfo[i].fromPlace,
+                        extendedProps: {    
+                            from: everyInfo[i].fromPlace,
+                            to: everyInfo[i].toPlace,
+                            id: everyInfo[i]._id
+                        }
+                    });
+            }
+
+            calendar.render();
+            
+            document.getElementById("closeModal").addEventListener('click', function() {
+                document.getElementById("toLocation").value = "";
+                document.getElementById("fromLocation").value = "";
+            });
+
+            // Handle the event submission
+            document.getElementById('submitEvent').addEventListener('click', function () {
+                // let startStr = req.body.startStr;
+                // let endStr = req.body.endStr;
+                // let userId = req.session.userId;
+                // let name = req.session.name;
+                // let from = req.body.from;
+                // let to = req.body.to;               
+                // Data to be sent to the backend
+
+                var eventData = {
+                    startStr: infos.startStr,
+                    endStr: infos.endStr,
+                    from: document.getElementById("fromLocation").value,
+                    to: document.getElementById("toLocation").value,
+                    name: infos.title
+                };
+                // Sending AJAX request to the backend
+                $.ajax({
+                    url: '/usr/addEvent',  // Update this with the URL of your backend endpoint
+                    method: 'POST',
+                    data: eventData,
+                    success: function (response) {
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        // Error handling
+                        alert('An error occurred. Please try again.');
+                    }
+                });
+                calendar.addEvent({
+                    title: name,
+                    start: infos.start,
+                    end: infos.end,
+                    from: eventData.from,
+                    to: eventData.to
+                });
+                $('#eventModal').modal('hide');
+                document.getElementById("toLocation").value = "";
+                document.getElementById("fromLocation").value = "";
+                calendar.render();
+            });
+
+
+            // Handle the event deletion
+            document.getElementById('deleteEvent').addEventListener('click', function () {
+                var eventData = {
+                    startStr: infos.startStr,
+                    endStr: infos.endStr,
+                    from: infos.extendedProps.from,
+                    to: infos.extendedProps.to,
+                    id: infos.extendedProps.id
+                };
+                $.ajax({
+                    url: '/usr/deleteEvent',  // Update this with the URL of your backend endpoint
+                    method: 'POST',
+                    data: eventData,
+                    success: function (response) {
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        // Error handling
+                        alert('An error occurred. Please try again.');
+                    }
+                });
+
+
+                if (selectedEvent) {
+                    selectedEvent.remove();
+                    $('#eventModal').modal('hide');
+                    calendar.render();
+                }
+
+                
+            });
+        });
+    </script>
+
+</body>
+
+</html>

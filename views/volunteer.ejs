@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Volunteer Portal</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar-scheduler@6.1.9/index.global.min.js'></script>
+
+    <style>
+        .flex-container {
+            /*background-color: #753704  !important;*/
+            background-color: #CF7922 !important;
+            color: white !important; 
+            width: 82%; 
+            height: 75%; 
+            margin-left: auto !important; 
+            margin-right: auto !important; 
+        }
+        
+        .fc-col-header-cell {
+            color: white !important; 
+        }
+
+        /* .fc-day-fc-day-mon-fc-day-past-dayHeaders {
+            color: white !important; 
+        } */
+
+        body {
+            background-color: #BF5700; /* UT Austin Burnt Orange */
+            color: white;
+        }
+
+        .navbar {
+            background-color: #753704; /* UT Austin Dark Gray */
+        }
+
+        .nav-link,
+        .navbar-brand {
+            color: white !important;
+        }
+
+        .ut-logo {
+            width: 150px;
+        }
+
+        .main-content {
+            background-color: white;
+            color: black;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+
+        .modal {
+            color: black;
+        }
+
+        .fc-col-header-cell-cushion {
+            color: white; /* Change this to your desired text color */
+            
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg mb-4">
+        <a class="navbar-brand" href="/">OnTheMoov</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/volunteer">Dasboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/logout">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="flex-container calendar-width calendar-height">
+        <div id="calendar"></div>
+    </div>
+
+    <!-- Bootstrap modal for confirmation -->
+    <div class="modal fade" id="eventModal" tabindex="-1" aria-labelledby="eventModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="eventModalLabel">Event Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Selected Time Range: <span id="selectedTimeRange"></span></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="submitEvent">Submit</button>
+                    <button type="button" class="btn btn-danger" id="deleteEvent">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var calendarEl = document.getElementById('calendar');
+            var infos;
+
+            var selectedEvent;
+
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'timeGridWeek',
+                height: screen.height * 0.7,
+                headerToolbar: {
+                    left: 'prev,next',
+                    center: 'title',
+                    right: ''
+                },
+                selectable: true,
+                allDaySlot: false,
+                dayHeaderClassNames: ["dayHeaders"],
+                select: function (info) {
+                    infos = info;
+                    document.getElementById('selectedTimeRange').textContent = info.startStr + ' to ' + info.endStr;
+                    $('#deleteEvent').hide();
+                    $('#submitEvent').show();
+                    $('#eventModal').modal('show');
+                },
+                eventClick: function (info) {
+                    selectedEvent = info.event;
+                    document.getElementById('selectedTimeRange').textContent = info.event.startStr + ' to ' + info.event.endStr;
+                    $('#deleteEvent').show();
+                    $('#submitEvent').hide();
+                    $('#eventModal').modal('show');
+                }
+            });
+
+            calendar.render();
+
+            // Handle the event submission
+            document.getElementById('submitEvent').addEventListener('click', function () {
+    
+                // Data to be sent to the backend
+                var eventData = {
+                    startStr: infos.startStr,
+                    endStr: infos.endStr,
+                };
+
+                // Sending AJAX request to the backend
+                $.ajax({
+                    url: '/usr/addEvent',  // Update this with the URL of your backend endpoint
+                    method: 'POST',
+                    data: eventData,
+                    success: function (response) {
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        // Error handling
+                        alert('An error occurred. Please try again.');
+                    }
+                });
+                calendar.addEvent({
+                    title: 'New Event',
+                    start: infos.start,
+                    end: infos.end,
+                });
+                $('#eventModal').modal('hide');
+                calendar.render();
+            });
+
+
+            // Handle the event deletion
+            document.getElementById('deleteEvent').addEventListener('click', function () {
+                if (selectedEvent) {
+                    selectedEvent.remove();
+                    $('#eventModal').modal('hide');
+                    calendar.render();
+                }
+            });
+        });
+    </script>
+
+</body>
+
+</html>

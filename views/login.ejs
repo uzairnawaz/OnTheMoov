@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Login</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js">
+	</script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<!-- <link rel="stylesheet" href="./css/main.css"> -->
+	<style>
+		body {
+            background-color: #BF5700; /* UT Austin Burnt Orange */
+            color: white;
+        }
+        .navbar {
+            background-color: #753704; /* UT Austin Dark Gray */
+        }
+        .nav-link, .navbar-brand {
+            color: white !important;
+        }
+        .ut-logo-navbar {
+            width: 150px;
+        }
+        .login-container {
+            max-width: 400px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            color: black;
+        }
+        .ut-logo {
+            width: 100%;
+            max-width: 200px;
+            display: block;
+            margin: 0 auto 20px;
+        }
+	</style>
+	<script type="text/javascript">
+		$(document).ready(function(){
+
+			$( "#form" ).submit(function(event) {
+				event.preventDefault();
+
+				$.ajax({
+					type: 'POST',
+					url: '/login',
+					data: $('#form').serialize(),
+					dataType: "json",
+					success: function(response){
+						//alert("a");
+						//console.log(response.Success);
+						$('#form')[0].reset();
+
+						document.getElementById("check").innerHTML=response.Success;
+         					//ADD THIS CODE
+         					setTimeout(function(){
+         						document.getElementById("check").innerHTML="";
+         					},3000);
+         					if (response.Success != undefined) {
+								window.location.href = response.redirect;
+         					};
+         				},
+         				error: function() {
+         				}
+         			})
+			});
+
+		});
+	</script>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg">
+        <a class="navbar-brand" href="/">
+            OnTheMoov
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/login">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/signup">Signup</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+		<div class="login-container">
+			<img src="https://upload.wikimedia.org/wikipedia/en/thumb/e/e1/University_of_Texas_at_Austin_seal.svg/1200px-University_of_Texas_at_Austin_seal.svg.png" alt="UT Austin Logo" class="ut-logo">
+			<form id="form" method="post" >
+				<div class="mb-3">
+					<label for="uid" class="form-label">Username</label>
+					<input type="text" class="form-control" id="uid" name="username" placeholder="bob">
+				</div>
+				<div class="mb-3">
+					<label for="upw" class="form-label">Password</label>
+					<input type="password" class="form-control" id="upw" name="password" placeholder="verysecret">
+				</div>
+				<input type="submit" value="Login" class="btn btn-success">
+				<div class="mt-3">
+					Not signed up? <a href="/signup">Sign Up</a>
+				</div>
+			</form>
+		</div>
+			<div class="mssg bg-danger">
+			<span id="check" ></span>
+		</div>
+		<div id="LangTable"><a href="/profile" id="aa"></a>
+		</div>
+
+		</div>
+		
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+</html>

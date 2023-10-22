@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UT Austin Login</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+	    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <style>
+        body {
+            background-color: #BF5700; /* UT Austin Burnt Orange */
+            color: white;
+        }
+        .navbar {
+            background-color: #753704; /* UT Austin Dark Gray */
+        }
+        .nav-link, .navbar-brand {
+            color: white !important;
+        }
+        .login-container {
+            max-width: 400px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            color: black;
+        }
+        .ut-logo {
+            width: 100%;
+            max-width: 200px;
+            display: block;
+            margin: 0 auto 20px;
+        }
+    </style>
+
+<script type="text/javascript">
+	$(document).ready(function(){
+		$( "#form1" ).submit(function(event) {
+			event.preventDefault();
+			$.ajax({
+				type: 'POST',
+				url: '/signup',
+				data: $('#form1').serialize(),	
+				dataType: "json",
+				success: function(response){
+					console.log(response.Success);
+					$('#form1')[0].reset();
+
+					document.getElementById("check").innerHTML=response.Success;
+						//ADD THIS CODE
+						setTimeout(function(){
+							document.getElementById("check").innerHTML="";
+						},3000);
+					},
+					error: function() {
+					}
+				})
+		});
+	});
+</script>
+
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg">
+        <a class="navbar-brand" href="/">
+            OnTheMoov
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/login">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/signup">Signup</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="login-container">
+        <img src="https://upload.wikimedia.org/wikipedia/en/thumb/e/e1/University_of_Texas_at_Austin_seal.svg/1200px-University_of_Texas_at_Austin_seal.svg.png" alt="UT Austin Logo" class="ut-logo">
+		<form method="post" id="form1">
+			<div class="mb-3">
+				<label for="text" class="form-label">Username:</label>
+				<input type="text" class="form-control" id="username" name="username" placeholder="bob">
+			</div>
+			<div class="mb-3">
+				<label for="password" class="form-label">Password:</label>
+				<input type="password" class="form-control" id="password" name="password" placeholder="superrocket123">
+			</div>
+			<div class="mb-3">
+				<label for="password" class="form-label">Confirm the Password:</label>
+				<input type="password" class="form-control" id="passwordConf" name="passwordConf" placeholder="superrocket123">
+			</div>
+			<div class="mb-3">
+				<label for="userType" class="form-label">I am a:</label>
+				<select class="form-control" id="userType" name="userType">
+					<option value="user">User</option>
+					<option value="volunteer">Volunteer</option>
+				</select>
+			</div>
+			<input type="submit" value="Signup" class="btn btn-success">
+			<div class="mt-3">
+				Already registered? <a href="/login">Log In</a>
+			</div>
+		</form>
+				<div class="mssg">
+			<span id="check" ></span>
+		</div>
+		<div id="LangTable"><a href="/profile" id="aa"></a>
+		</div>
+
+    </div>
+</body>
+</html>
