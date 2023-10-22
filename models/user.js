@@ -13,7 +13,8 @@ userSchema = new Schema( {
 			startTime: String,
 			endTime: String,
 			fromPlace: String,
-			toPlace: String
+			toPlace: String,
+			slotted: Boolean,
 		}
 	]
 }),

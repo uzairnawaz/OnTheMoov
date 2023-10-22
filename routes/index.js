@@ -6,13 +6,6 @@ router.get('/', function (req, res, next) {
 	return res.render('home.ejs');
 });
 
-router.get('/volunteer', function (req, res, next) {
-	if (!req.session.volunteer || req.session.volunteer == undefined) {
-		return res.render('error.ejs');
-	}
-	return res.render('volunteer.ejs');
-});
-
 router.get('/user', function (req, res, next) {
 	if (req.session.volunteer || req.session.volunteer == undefined) {
 		return res.render('error.ejs');
@@ -118,6 +111,48 @@ router.get('/logout', function (req, res, next) {
 }
 });
 
+//volunteer routes
+router.get('/volunteer', function (req, res, next) {
+	if (!req.session.volunteer || req.session.volunteer == undefined) {
+		return res.render('error.ejs');
+	}
+	
+	User.find({}, function(err, data) {
+		let allRequests = [];
+		for (let i = 0; i < data.length; i++) {
+			for (let j = 0; j < data[i].requests.length; j++) {
+				allRequests.push(data[i].requests[j]);
+			}
+		}
+		return res.render('volunteer.ejs', {infos: allRequests, name: req.session.name});
+
+	});
+});
+
+router.post('/volunteer/slot', function(req, res) {
+	let eventId = req.body.id;
+	let name = req.body.name;
+	console.log('name : ' + name);
+	User.findOne({username: name}, function(err, data) {
+		console.log(data)
+		for (let i = 0; i < data.requests.length; i++) {
+			if (data.requests[i]._id != null && data.requests[i]._id.toString() == eventId) {
+				console.log(data.requests[i]);
+				data.requests[i].slotted = true;
+				break;
+			}
+		}
+		data.save(function(err) {
+			if (!err) {
+				console.log("Success!");
+			}else {
+				console.log(err);
+			}
+		});
+	})
+})
+
+//user routes
 router.post('/user', function(req, res) {
 	let source = req.body.from; 
 	let dest = req.body.to; 
@@ -128,7 +163,7 @@ router.post('/user', function(req, res) {
 
 router.post('/usr/deleteEvent', function(req, res, next) {
 	// console.log('deted');
-	// console.log(req.body);
+	console.log(req.body);
 	let eventId = req.body.id;
 	let name = req.body.name;
 	User.findOne({unique_id: req.session.userId}, function(err, data) {
@@ -180,6 +215,7 @@ router.post('/usr/addEvent', async function(req, res, next) {
 		reqs["endTime"] = endStr;
 		reqs["fromPlace"] = from;
 		reqs["toPlace"] = to;
+		reqs["slotted"] = false;
 		data.requests.push(reqs);
 		
 		

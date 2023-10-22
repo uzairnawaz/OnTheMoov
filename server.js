@@ -25,7 +25,7 @@ db.once('open', function () {
 });
 
 app.use(session({
-  secret: 'work hard',
+  secret: 'verysecret',
   resave: true,
   saveUninitialized: false,
   store: new MongoStore({
