@@ -12,6 +12,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar-scheduler@6.1.9/index.global.min.js'></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/css/iziToast.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/js/iziToast.min.js"></script>
 
     <style>
         .flex-container {
@@ -172,6 +174,7 @@
 
                 <div class="modal-footer" id="modal-buttons">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal" id="closeModal">Close</button>
+                    <button type="button" class="btn btn-danger" id="revertButton">Revert</button>
                 </div>
             </div>
         </div>
@@ -179,7 +182,7 @@
 
 
     <script>
-        function formatDateTime(startStr, endStr, from, to) {
+        function formatDateTime(startStr, endStr, from, to, slotted) {
             let startDate = new Date(startStr);
             let endDate = new Date(endStr);
 
@@ -204,7 +207,8 @@
                 return `<strong>From:</strong> ${from}<br>
                         <strong>To:</strong> ${to}<br>
                         <strong>Date:</strong> ${formattedStartDate}<br>
-                        <strong>Time:</strong> ${formattedStartTime} to ${formattedEndTime}`;
+                        <strong>Time:</strong> ${formattedStartTime} to ${formattedEndTime}<br>
+                        <strong>Slotted:</strong> ${slotted}`;
             } else {
                 let formattedEndDate = endDate.toLocaleString('en-US', dateOptions);
                 return `<strong>From:</strong> ${from}<br>
@@ -213,7 +217,8 @@
                         <strong>Time:</strong> ${formattedStartTime}<br>
                         <strong>to</strong><br>
                         <strong>Date:</strong> ${formattedEndDate}<br>
-                        <strong>Time:</strong> ${formattedEndTime}`;
+                        <strong>Time:</strong> ${formattedEndTime}<br>
+                        <strong>Slotted:</strong> ${slotted}`;
             }
         }
 
@@ -241,8 +246,14 @@
             },
             eventClick: function (info) {
                 selectedEvent = info.event;
-                document.getElementById('selectedTimeRange').innerHTML = formatDateTime(info.event.startStr, info.event.endStr, info.event.extendedProps.from, info.event.extendedProps.to);
-                infos = info.event
+                document.getElementById('selectedTimeRange').innerHTML = formatDateTime(info.event.startStr, info.event.endStr, info.event.extendedProps.from, info.event.extendedProps.to, info.event.extendedProps.slotted);
+                infos = info.event;
+                if (info.event.extendedProps.slotted) {
+                    $('#revertButton').show();
+                } else {
+                    $('#revertButton').hide();
+                }
+                
                 $('#modal-buttons').show();  // Showing the modal buttons
                 $('#form-buttons').hide();  // Hiding the form buttons
                 $('#form').hide();  // Hide the form
@@ -259,15 +270,58 @@
                         extendedProps: {    
                             from: everyInfo[i].fromPlace,
                             to: everyInfo[i].toPlace,
-                            id: everyInfo[i]._id
+                            id: everyInfo[i]._id,
+                            slotted: everyInfo[i].slotted
                         }
                     });
+            }
+            console.log('see');
+            console.log(selectedEvent);
+            if (infos != undefined) {
+                    infos.remove();
+                    calendar.render();
             }
 
             calendar.render();
           
 
             // Handle the event submission
+            document.getElementById('revertButton').addEventListener('click', function () {
+                var eventData = {
+                    startStr: infos.startStr,
+                    endStr: infos.endStr,
+                    from: infos.extendedProps.from,
+                    to: infos.extendedProps.to,
+                    name: infos.title,
+                    id: infos.extendedProps.id
+                };
+
+                $.ajax({
+                    url: '/volunteer/revertEvent',
+                    method: 'POST',
+                    data: eventData,
+                    success: function(response) {
+                        console.log(response)
+                        iziToast.success({
+                        title: 'Success',
+                        message: 'You are no longed assigned to the time slot'
+                        });
+                    },
+                    error: function(error) {
+                        console.log(error);
+                        // Handle the error response
+                        iziToast.error({
+                        title: 'Error',
+                        message: 'Something did not go right'
+                        });
+                    }
+                });
+                $('#eventModal').modal('hide');
+                selectedEvent.remove();
+                calendar.render();
+
+
+            });
 
         });
     </script>

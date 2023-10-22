@@ -8,6 +8,8 @@
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 	    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/css/iziToast.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/js/iziToast.min.js"></script>
     <style>
 		body {
             background-color: #f7f7f7;
@@ -87,16 +89,26 @@
 				data: $('#form1').serialize(),	
 				dataType: "json",
 				success: function(response){
-					console.log(response.Success);
-					$('#form1')[0].reset();
-
-					document.getElementById("check").innerHTML=response.Success;
+					
 						//ADD THIS CODE
-						setTimeout(function(){
-							document.getElementById("check").innerHTML="";
-						},3000);
-					},
+					if (response.Success == "username is already used.") {
+						iziToast.error({
+                            title: 'Failed',
+                            message: 'Username already used'
+                        });
+					}else {
+                        iziToast.success({
+                            title: 'Success',
+                            message: 'Your account has been created!'
+                        });
+                        $('#form1')[0].reset();
+                    }
+                },
 					error: function() {
+                        iziToast.error({
+                            title: 'Failed',
+                            message: 'Error!'
+                        });
 					}
 				})
 		});

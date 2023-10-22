@@ -246,12 +246,21 @@
             eventClick: function (info) {
                 selectedEvent = info.event;
                 document.getElementById('selectedTimeRange').innerHTML = formatDateTime(info.event.startStr, info.event.endStr, info.event.extendedProps.from, info.event.extendedProps.to, info.event.extendedProps.slotted);
-                infos = info.event
+                infos = info.event;
+
+                // Check if the event is slotted
+                if (info.event.extendedProps.slotted) {
+                    $('#slotEvent').hide();  // Hide the "I got this!" button if already slotted
+                } else {
+                    $('#slotEvent').show();  // Show the "I got this!" button if not slotted
+                }
+
                 $('#modal-buttons').show();  // Showing the modal buttons
                 $('#form-buttons').hide();  // Hiding the form buttons
                 $('#form').hide();  // Hide the form
                 $('#eventModal').modal('show');
             }
+
             });
 
             for (let i = 0; i < everyInfo.length; i++) {
@@ -304,7 +313,7 @@
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
                         // Error handling
-                        alert('An error occurred. Please try again.');
+                        // alert('An error occurred. Please try again.');
                     }
                 });
                 calendar.addEvent({
@@ -341,7 +350,7 @@
                         },
                         error: function (jqXHR, textStatus, errorThrown) {
                             // Error handling
-                            alert('An error occurred. Please try again.');
+                            // alert('An error occurred. Please try again.');
                         }
                     })
                     iziToast.success({
@@ -355,11 +364,24 @@
                     });
                 }
 
+                calendar.addEvent({
+                        title: selectedEvent.title,
+                        start: selectedEvent.start,
+                        end: selectedEvent.end,
+                        from: selectedEvent.from,
+                        extendedProps: {    
+                            from: selectedEvent.extendedProps.from,
+                            to: selectedEvent.extendedProps.to,
+                            id: selectedEvent.extendedProps.id,
+                            slotted: false
+                        },
+                        backgroundColor: "", // Add this line
 
-                if (selectedEvent) {
-                    $('#eventModal').modal('hide');
-                    calendar.render();
-                }
+                });
+
+                $('#eventModal').modal('hide');
+                selectedEvent.remove();
+                calendar.render();
                 
                 // location.reload();
                 

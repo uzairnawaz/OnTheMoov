@@ -54,8 +54,7 @@ app.use(function (req, res, next) {
 // error handler
 // define as the last app.use callback
 app.use(function (err, req, res, next) {
-  res.status(err.status || 500);
-  res.send(err.message);
+  return res.render("error.ejs")
 });
 
 

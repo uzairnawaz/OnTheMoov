@@ -170,7 +170,7 @@
 
 
     <script>
-        function formatDateTime(startStr, endStr, from, to) {
+        function formatDateTime(startStr, endStr, from, to, slotted) {
             let startDate = new Date(startStr);
             let endDate = new Date(endStr);
 
@@ -195,7 +195,8 @@
                 return `<strong>From:</strong> ${from}<br>
                         <strong>To:</strong> ${to}<br>
                         <strong>Date:</strong> ${formattedStartDate}<br>
-                        <strong>Time:</strong> ${formattedStartTime} to ${formattedEndTime}`;
+                        <strong>Time:</strong> ${formattedStartTime} to ${formattedEndTime}<br>
+                        <strong>Slotted:</strong> ${slotted}`;
             } else {
                 let formattedEndDate = endDate.toLocaleString('en-US', dateOptions);
                 return `<strong>From:</strong> ${from}<br>
@@ -204,9 +205,11 @@
                         <strong>Time:</strong> ${formattedStartTime}<br>
                         <strong>to</strong><br>
                         <strong>Date:</strong> ${formattedEndDate}<br>
-                        <strong>Time:</strong> ${formattedEndTime}`;
+                        <strong>Time:</strong> ${formattedEndTime}<br>
+                        <strong>Slotted:</strong> ${slotted}`;
             }
         }
+
 
 
         document.addEventListener('DOMContentLoaded', function () {
@@ -239,7 +242,7 @@
             },
             eventClick: function (info) {
                 selectedEvent = info.event;
-                document.getElementById('selectedTimeRange').innerHTML = formatDateTime(info.event.startStr, info.event.endStr, info.event.extendedProps.from, info.event.extendedProps.to);
+                document.getElementById('selectedTimeRange').innerHTML = formatDateTime(info.event.startStr, info.event.endStr, info.event.extendedProps.from, info.event.extendedProps.to, info.event.extendedProps.slotted);
                 infos = info.event
                 $('#modal-buttons').show();  // Showing the modal buttons
                 $('#form-buttons').hide();  // Hiding the form buttons
@@ -257,8 +260,10 @@
                         extendedProps: {    
                             from: everyInfo[i].fromPlace,
                             to: everyInfo[i].toPlace,
-                            id: everyInfo[i]._id
-                        }
+                            id: everyInfo[i]._id,
+                            slotted: everyInfo[i].slotted
+                        },
+                        backgroundColor: everyInfo[i].slotted ? "" : "red",
                     });
             }
 
@@ -302,8 +307,14 @@
                     title: name,
                     start: infos.start,
                     end: infos.end,
-                    from: eventData.from,
-                    to: eventData.to
+                    extendedProps: {    
+                            from: document.getElementById("fromLocation").value,
+                            to: document.getElementById("toLocation").value,
+                            id: infos._id,
+                            slotted: false
+                    },
+                    backgroundColor: "red"
+                    
                 });
                 $('#eventModal').modal('hide');
                 document.getElementById("toLocation").value = "";
@@ -319,7 +330,8 @@
                     endStr: infos.endStr,
                     from: infos.extendedProps.from,
                     to: infos.extendedProps.to,
-                    id: infos.extendedProps.id
+                    id: infos.extendedProps.id,
+                    slotted: infos.extendedProps.slotted
                 };
                 $.ajax({
                     url: '/usr/deleteEvent',  // Update this with the URL of your backend endpoint
