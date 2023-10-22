@@ -47,7 +47,8 @@ router.post('/signup', function(req, res, next) {
 							username: personInfo.username,
 							password: personInfo.password,
 							passwordConf: personInfo.passwordConf,
-							volunteer: isVolunteer
+							volunteer: isVolunteer,
+							points: 0
 						});
 
 						newPerson.save(function(err, Person){
@@ -121,7 +122,9 @@ router.get('/volunteer', function (req, res, next) {
 		let allRequests = [];
 		for (let i = 0; i < data.length; i++) {
 			for (let j = 0; j < data[i].requests.length; j++) {
-				allRequests.push(data[i].requests[j]);
+				if (!data[i].volunteer) {
+					allRequests.push(data[i].requests[j]);
+				}
 			}
 		}
 		return res.render('volunteer.ejs', {infos: allRequests, name: req.session.name});
@@ -129,10 +132,34 @@ router.get('/volunteer', function (req, res, next) {
 	});
 });
 
+router.get('/volunteer/dashboard', function(req, res, next) {
+	if (!req.session.volunteer || req.session.volunteer == undefined) {
+		return res.render('error.ejs');
+	}
+
+	User.findOne({unique_id: req.session.userId}, function(err, data) {
+		console.log('quqweofjqowiejfoiwqe')
+		console.log(data);
+		return res.render('volunteerDashboard.ejs', {infos: data.requests, name: req.session.name});
+	})
+
+})
+
 router.post('/volunteer/slot', function(req, res) {
+	if (!req.session.volunteer || req.session.volunteer == undefined) {
+		return res.render('error.ejs');
+	}
 	let eventId = req.body.id;
+	let startStr = req.body.startStr;
+	let endStr = req.body.endStr;
+	let userId = req.session.userId;
 	let name = req.body.name;
+	let rName = req.session.name;
+	let from = req.body.from;
+	let to = req.body.to;
+
 	console.log('name : ' + name);
+	//slot it
 	User.findOne({username: name}, function(err, data) {
 		console.log(data)
 		for (let i = 0; i < data.requests.length; i++) {
@@ -150,8 +177,41 @@ router.post('/volunteer/slot', function(req, res) {
 			}
 		});
 	})
+	//add to volunteer's dashboard
+	User.findOne({unique_id:userId},function(err,data){
+		reqs = {};
+		reqs["name"] = name;
+		reqs["startTime"] = startStr;
+		reqs["endTime"] = endStr;
+		reqs["fromPlace"] = from;
+		reqs["toPlace"] = to;
+		reqs["slotted"] = false;
+		data.requests.push(reqs);
+		
+		data.points++;
+		data.save(function(error) {
+			if (!error) {
+				console.log('success!');
+			}
+		})		
+	});
+
 })
 
+router.get('/volunteer/ranking', function(req, res) {
+	User.find({}, function(err, data) {
+		console.log(data);
+		let resu = [];
+		for (let i = 0; i < data.length; i++) {
+			if (data[i].volunteer) {
+				resu.push({name: data[i].username, point: data[i].points});
+			}
+		}
+		console.log('hi');
+		console.log(resu);
+		return res.render("ranking.ejs", {ranks: resu});
+	});
+});
 //user routes
 router.post('/user', function(req, res) {
 	let source = req.body.from; 
@@ -171,11 +231,8 @@ router.post('/usr/deleteEvent', function(req, res, next) {
 		console.log('deleting : ' + eventId);
 		rqs = [];
 		for (let i = 0; i < data.requests.length; i++) {
-			if (data.requests[i]._id.toString() != eventId) {
+			if (data.requests[i]._id != null && data.requests[i]._id.toString() != eventId) {
 				rqs.push(data.requests[i]);
-				// console.log("deleting success!!");
-				// delete data.requests[i];
-				// break;
 			}
 		}
 		data.requests = rqs;

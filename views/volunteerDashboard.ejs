@@ -5,18 +5,16 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Volunteer Portal</title>
+    <title>User Portal</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar-scheduler@6.1.9/index.global.min.js'></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/css/iziToast.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/js/iziToast.min.js"></script>
+
     <style>
-             .flex-container {
+        .flex-container {
             background-color: #e8f5fd; /* A very light shade of blue */
             color: #333 !important; /* Dark font color for readability */
             width: 82%; 
@@ -111,7 +109,7 @@
             font-weight: bold;
         }
     </style>
-</head>
+    </head>
 
 <body>
 
@@ -174,7 +172,6 @@
 
                 <div class="modal-footer" id="modal-buttons">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal" id="closeModal">Close</button>
-                    <button type="button" class="btn btn-info" id="slotEvent">I got this!</button>
                 </div>
             </div>
         </div>
@@ -182,7 +179,7 @@
 
 
     <script>
-        function formatDateTime(startStr, endStr, from, to, slotted) {
+        function formatDateTime(startStr, endStr, from, to) {
             let startDate = new Date(startStr);
             let endDate = new Date(endStr);
 
@@ -207,8 +204,7 @@
                 return `<strong>From:</strong> ${from}<br>
                         <strong>To:</strong> ${to}<br>
                         <strong>Date:</strong> ${formattedStartDate}<br>
-                        <strong>Time:</strong> ${formattedStartTime} to ${formattedEndTime}<br>
-                        <strong>Slotted:</strong> ${slotted}`;
+                        <strong>Time:</strong> ${formattedStartTime} to ${formattedEndTime}`;
             } else {
                 let formattedEndDate = endDate.toLocaleString('en-US', dateOptions);
                 return `<strong>From:</strong> ${from}<br>
@@ -217,10 +213,10 @@
                         <strong>Time:</strong> ${formattedStartTime}<br>
                         <strong>to</strong><br>
                         <strong>Date:</strong> ${formattedEndDate}<br>
-                        <strong>Time:</strong> ${formattedEndTime}<br>
-                        <strong>Slotted:</strong> ${slotted}`;
+                        <strong>Time:</strong> ${formattedEndTime}`;
             }
         }
+
 
         document.addEventListener('DOMContentLoaded', function () {
             var everyInfo = <%- JSON.stringify(infos) %>;
@@ -245,7 +241,7 @@
             },
             eventClick: function (info) {
                 selectedEvent = info.event;
-                document.getElementById('selectedTimeRange').innerHTML = formatDateTime(info.event.startStr, info.event.endStr, info.event.extendedProps.from, info.event.extendedProps.to, info.event.extendedProps.slotted);
+                document.getElementById('selectedTimeRange').innerHTML = formatDateTime(info.event.startStr, info.event.endStr, info.event.extendedProps.from, info.event.extendedProps.to);
                 infos = info.event
                 $('#modal-buttons').show();  // Showing the modal buttons
                 $('#form-buttons').hide();  // Hiding the form buttons
@@ -263,109 +259,16 @@
                         extendedProps: {    
                             from: everyInfo[i].fromPlace,
                             to: everyInfo[i].toPlace,
-                            id: everyInfo[i]._id,
-                            slotted: everyInfo[i].slotted
-                        },
-                        backgroundColor: everyInfo[i].slotted ? "" : "red", // Add this line
-
+                            id: everyInfo[i]._id
+                        }
                     });
             }
 
             calendar.render();
-            
-            document.getElementById("closeModal").addEventListener('click', function() {
-                document.getElementById("toLocation").value = "";
-                document.getElementById("fromLocation").value = "";
-            });
+          
 
             // Handle the event submission
-            document.getElementById('submitEvent').addEventListener('click', function () {
-                // let startStr = req.body.startStr;
-                // let endStr = req.body.endStr;
-                // let userId = req.session.userId;
-                // let name = req.session.name;
-                // let from = req.body.from;
-                // let to = req.body.to;               
-                // Data to be sent to the backend
 
-                var eventData = {
-                    startStr: infos.startStr,
-                    endStr: infos.endStr,
-                    from: document.getElementById("fromLocation").value,
-                    to: document.getElementById("toLocation").value,
-                    name: infos.title
-                };
-                // Sending AJAX request to the backend
-                $.ajax({
-                    url: '/usr/addEvent',  // Update this with the URL of your backend endpoint
-                    method: 'POST',
-                    data: eventData,
-                    success: function (response) {
-                    },
-                    error: function (jqXHR, textStatus, errorThrown) {
-                        // Error handling
-                        alert('An error occurred. Please try again.');
-                    }
-                });
-                calendar.addEvent({
-                    title: name,
-                    start: infos.start,
-                    end: infos.end,
-                    from: eventData.from,
-                    to: eventData.to
-                });
-                $('#eventModal').modal('hide');
-                document.getElementById("toLocation").value = "";
-                document.getElementById("fromLocation").value = "";
-                calendar.render();
-            });
-
-
-            // Handle the event deletion
-            document.getElementById('slotEvent').addEventListener('click', function () {
-                var eventData = {
-                    startStr: infos.startStr,
-                    endStr: infos.endStr,
-                    from: infos.extendedProps.from,
-                    to: infos.extendedProps.to,
-                    id: infos.extendedProps.id,
-                    name: infos.title
-                };
-                if (infos.backgroundColor == 'red') {
-                    $.ajax({
-                        url: '/volunteer/slot',  // Update this with the URL of your backend endpoint
-                        method: 'POST',
-                        data: eventData,
-                        success: function (response) {
-                            
-                        },
-                        error: function (jqXHR, textStatus, errorThrown) {
-                            // Error handling
-                            alert('An error occurred. Please try again.');
-                        }
-                    })
-                    iziToast.success({
-                                title: 'Success',
-                                message: 'Thank you for volunteering!'
-                    });
-                } else {
-                    iziToast.error({
-                        title: 'Failed',
-                        message: 'Already slotted'
-                    });
-                }
-
-
-                if (selectedEvent) {
-                    $('#eventModal').modal('hide');
-                    calendar.render();
-                }
-                
-                // location.reload();
-                
-
-                
-            });
         });
     </script>
 

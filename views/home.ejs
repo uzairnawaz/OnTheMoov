@@ -7,36 +7,136 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>On The Moov - UT Austin</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <style>
         body {
-            background-color: #BF5700; /* UT Austin Burnt Orange */
-            color: white;
+            background-color: #f7f7f7;
+            color: #333;
+            font-family: 'Helvetica', sans-serif;
         }
+
+        /* Modern Navbar */
         .navbar {
-            background-color: #753704; /* UT Austin Dark Gray */
+            background-color: #fff;
+            border-bottom: 1px solid #e0e0e0;
         }
-        .nav-link, .navbar-brand {
-            color: white !important;
+
+        .navbar-brand {
+            color: #007bff !important;
         }
-        .ut-logo {
-            width: 150px;
+
+        .navbar-nav .nav-link {
+            color: #333 !important;
+            padding-left: 20px;
+            padding-right: 20px;
+            transition: color 0.3s, transform 0.3s;
         }
+
+        .navbar-nav .nav-link:hover {
+            color: #007bff !important;
+            transform: scale(1.1);
+        }
+
+        .navbar-toggler {
+            border-color: #007bff;
+        }
+
+        .navbar-toggler-icon {
+            background-color: #007bff;
+        }
+
+        /* Existing styles below */
         .main-content {
-            background-color: white;
-            color: black;
-            padding: 20px;
-            border-radius: 5px;
+            background-color: #ffffff;
+            color: #333;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
             margin: 20px 0;
         }
+
+        .flex-container {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            padding: 20px;
+        }
+
+        .modal-content {
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #form .form-control {
+            border: 1px solid #e0e0e0;
+            border-radius: 5px;
+            transition: border-color 0.3s;
+        }
+
+        #form .form-control:focus {
+            border-color: #007bff;
+            box-shadow: none;
+        }
+
+        .modal-footer button, 
+        #form-buttons input[type="submit"] {
+            border-radius: 5px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .modal-footer .btn-secondary {
+            background-color: #e0e0e0;
+            color: #333;
+        }
+
+        .modal-footer .btn-secondary:hover {
+            background-color: #cfcfcf;
+        }
+
+        .modal-footer .btn-primary,
+        #form-buttons .btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .modal-footer .btn-primary:hover,
+        #form-buttons .btn-primary:hover {
+            background-color: #0069d9;
+        }
+
+        .modal-footer .btn-info {
+            background-color: #17a2b8;
+            color: white;
+        }
+
+        .modal-footer .btn-info:hover {
+            background-color: #128692;
+        }
+
+        .button-pulse:hover {
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            70% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
     </style>
 </head>
 
 <body>
 
     <nav class="navbar navbar-expand-lg">
-        <a class="navbar-brand" href="/">
-            OnTheMoov
-        </a>
+        <a class="navbar-brand" href="/">OnTheMoov</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -46,28 +146,55 @@
                     <a class="nav-link" href="/login">Login</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/signup">Signup</a>
+                    <a class="nav-link" href="/signup">Register</a>
                 </li>
             </ul>
         </div>
     </nav>
-
-    <div class="container">
-        <div class="main-content">
+    <div class="container my-4">
+        <div class="main-content animate__animated animate__fadeIn">
             <h1>Welcome to "On The Moov"</h1>
             <p>
                 On The Moov is a dedicated student organization at UT Austin aiming to provide disabled students with the support they need to navigate the campus with ease.
             </p>
             <p>
-                Our team is available throughout the academic year to assist with mobility, provide information on accessible routes, and ensure everyone has a fulfilling experience at UT Austin.
+                The application is available to assist with mobility, provide information on accessible routes, and ensure everyone has a fulfilling experience at UT Austin.
             </p>
+
+            <section class="my-4 animate__animated animate__slideInRight">
+                <h2>Inspiration</h2>
+                <p>
+                    On the Moov is a student-led organization at UT created to connect disabled students to volunteers who can assist them in getting to classes and events. From experience, we know this organization has a fantastic cause, but its means of connecting people can be improved. We aim to streamline the process of getting help to longhorns in need.
+                </p>
+            </section>
+
+            <section class="my-4 animate__animated animate__slideInLeft">
+                <h2>What it does</h2>
+                <p>
+                    This web app allows students to request assistance traveling from place to place around campus, facilitating scheduling and matching volunteers and students who need help. Our platform's interface ensures ease of use, allowing students to seamlessly request assistance while enabling volunteers to promptly provide support.
+                </p>
+            </section>
+
+            <section class="my-4 animate__animated animate__slideInRight">
+                <h2>How we built it</h2>
+                <p>
+                    We built On the Moov with Bootstrap and MongoDB. Our commitment to a seamless user experience led us to integrate modern web technologies and intuitive design paradigms. This synergy between backend robustness and frontend elegance ensures that On The Moov is both powerful and user-friendly.
+                </p>
+            </section>
+
+            <section class="my-4 animate__animated animate__slideInLeft">
+                <h2>Join the Movement</h2>
+                <p>
+                    We believe in creating a campus environment that's inclusive and accessible for everyone. Whether you're a student looking for assistance or a kind-hearted volunteer, we invite you to join us in making UT Austin more accessible and fostering a community of care and support.
+                </p>
+                <a href="/signup" class="btn btn-primary button-pulse">Get Started</a>
+            </section>
         </div>
     </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
 </body>
 
 </html>

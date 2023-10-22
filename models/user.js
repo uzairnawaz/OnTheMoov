@@ -7,6 +7,7 @@ userSchema = new Schema( {
 	password: String,
 	passwordConf: String,
 	volunteer: Boolean,
+	points: Number,
 	requests: [
 		{
 			name: String,
@@ -15,6 +16,7 @@ userSchema = new Schema( {
 			fromPlace: String,
 			toPlace: String,
 			slotted: Boolean,
+			
 		}
 	]
 }),
